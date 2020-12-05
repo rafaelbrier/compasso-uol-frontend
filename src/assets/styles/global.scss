@@ -1,0 +1,36 @@
+/*#region DISPLAY */
+
+@mixin displayFlex($inline) {
+    @if $inline {
+        display: inline-flex;
+    } @else {
+        display: flex;
+    }
+}
+
+@mixin flexAlignJustify($inline, $alignItems, $justifyContent) {
+    @include displayFlex($inline);
+    align-items: $alignItems;
+    justify-content: $justifyContent;
+}
+
+.d-flex-center-v {
+    @include flexAlignJustify(false, center, unset);
+}
+.d-flex-center-h {
+    @include flexAlignJustify(false, unset, center);
+}
+.d-flex-center-vh {
+    @include flexAlignJustify(false, center, center);
+}
+.d-flex-inline-center-v {
+    @include flexAlignJustify(true, center, unset);
+}
+.d-flex-inline-center-h {
+    @include flexAlignJustify(true, unset, center);
+}
+.d-flex-inline-center-vh {
+    @include flexAlignJustify(true, center, center);
+}
+
+/*#endregion*/
