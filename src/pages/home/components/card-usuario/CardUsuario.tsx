@@ -1,5 +1,4 @@
-import apiGit from "api/git/api-git";
-import ENDPOINTS_GIT from "api/git/endpoints-git";
+import { getUserRepos, getUserStarred } from "api/git/services/users-service";
 import { ReactComponent as ArchiveFillIcon } from "bootstrap-icons/icons/archive-fill.svg";
 import { ReactComponent as StarFillIcon } from "bootstrap-icons/icons/star-fill.svg";
 import { ReactComponent as XIcon } from "bootstrap-icons/icons/x.svg";
@@ -64,16 +63,12 @@ const CardUsuario: React.FC<CardUsuarioProps> = ({
 
     const handleRepoClick = useCallback(() => {
         starredRequest.clear();
-        reposRequest.run(() =>
-            apiGit.get(ENDPOINTS_GIT.USER_REPO(user?.login))
-        );
+        reposRequest.run(() => getUserRepos(user?.login));
     }, [reposRequest, starredRequest, user]);
 
     const handleStarredClick = useCallback(() => {
         reposRequest.clear();
-        starredRequest.run(() =>
-            apiGit.get(ENDPOINTS_GIT.USER_STARRED(user?.login))
-        );
+        starredRequest.run(() => getUserStarred(user?.login));
     }, [starredRequest, reposRequest, user]);
 
     const RequestError = useMemo(
@@ -131,6 +126,7 @@ const CardUsuario: React.FC<CardUsuarioProps> = ({
                             )}
                         >
                             <Button
+                                id="btn-listar-repo"
                                 className="btn btn-outline-success"
                                 startIcon={<ArchiveFillIcon />}
                                 text="Repositórios"

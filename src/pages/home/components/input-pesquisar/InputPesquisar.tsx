@@ -1,5 +1,4 @@
-import apiGit from "api/git/api-git";
-import ENDPOINTS_GIT from "api/git/endpoints-git";
+import { getUser } from "api/git/services/users-service";
 import { ReactComponent as SearchIcon } from "bootstrap-icons/icons/search.svg";
 import Button from "components/button/Button";
 import InputText from "components/input-text/InputText";
@@ -48,9 +47,7 @@ const InputPesquisar = forwardRef<any, InputPesquisarProps>(
 
         const handlePesquisarClick = useCallback(
             async (_nome?: string) => {
-                const response = await run(() =>
-                    apiGit.get(ENDPOINTS_GIT.USER(_nome))
-                );
+                const response = await run(() => getUser(_nome));
                 if (response.success) setMaisPesquisados(_nome);
             },
             [run, setMaisPesquisados]
