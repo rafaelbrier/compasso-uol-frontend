@@ -25,9 +25,13 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
      */
     disabled?: boolean;
     /**
+     * Ícone no início do botão
+     */
+    startIcon?: React.ReactNode;
+    /**
      * Ícone no final do botão
      */
-    endIcon: React.ReactNode;
+    endIcon?: React.ReactNode;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -36,6 +40,7 @@ const Button: React.FC<ButtonProps> = ({
     loading,
     loadingText = "Buscando...",
     disabled,
+    startIcon,
     endIcon,
     ...rest
 }) => {
@@ -59,12 +64,18 @@ const Button: React.FC<ButtonProps> = ({
         [Loading, loading, endIcon]
     );
 
+    const StartIcon = useMemo(
+        () => startIcon && <div className="d-flex mr-2">{startIcon} </div>,
+        [startIcon]
+    );
+
     return (
         <button
             className={clsx("d-flex-inline-center-v", className)}
             disabled={loading || disabled}
             {...rest}
         >
+            {StartIcon}
             {loading ? loadingText : text}
             {EndIcon}
         </button>

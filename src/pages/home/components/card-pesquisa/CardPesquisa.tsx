@@ -13,10 +13,6 @@ export interface CardPesquisaProps {
      */
     centerX?: boolean;
     /**
-     * O Header do Card
-     */
-    header?: string;
-    /**
      * Caminho da imagem do card
      */
     imageSrc?: string;
@@ -37,7 +33,6 @@ export interface CardPesquisaProps {
 }
 const CardPesquisa: React.FC<CardPesquisaProps> = ({
     children,
-    header,
     cardWidth = "75%",
     centerX,
     imageSrc,
@@ -51,17 +46,16 @@ const CardPesquisa: React.FC<CardPesquisaProps> = ({
             style={{ width: cardWidth }}
         >
             <div className="media p-4">
-                <img
-                    src={imageSrc}
-                    className="align-self-center mr-3"
-                    alt={imageAlt}
-                    height={imageHeight}
-                    width={imageWidth}
-                />
-                <div className="media-body m-4">
-                    <h5 className="mt-0">{header}</h5>
-                    {children}
-                </div>
+                <a href="https://github.com/">
+                    <img
+                        src={imageSrc}
+                        className="mr-3"
+                        alt={imageAlt}
+                        height={imageHeight}
+                        width={imageWidth}
+                    />
+                </a>
+                <div className="media-body">{children}</div>
             </div>
         </div>
     );
