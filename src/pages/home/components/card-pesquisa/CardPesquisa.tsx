@@ -1,6 +1,6 @@
 import clsx from "clsx";
+import homeClasses from "pages/home/home.module.scss";
 import React from "react";
-import classes from "./styles.module.scss";
 
 export interface CardPesquisaProps {
     /**
@@ -36,8 +36,8 @@ const CardPesquisa: React.FC<CardPesquisaProps> = ({
     imageWidth = 128,
 }) => {
     return (
-        <div className={clsx(classes.card, "card", centerX && "mx-auto")}>
-            <div className={clsx(classes.cardBody, "media p-4")}>
+        <div className={clsx(homeClasses.card, "card", centerX && "mx-auto")}>
+            <div className={clsx(homeClasses.cardBody, "media p-4")}>
                 <a href="https://github.com/">
                     <img
                         src={imageSrc}

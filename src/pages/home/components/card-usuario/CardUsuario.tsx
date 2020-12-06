@@ -2,6 +2,7 @@ import apiGit from "api/git/api-git";
 import ENDPOINTS_GIT from "api/git/endpoints-git";
 import { ReactComponent as ArchiveFillIcon } from "bootstrap-icons/icons/archive-fill.svg";
 import { ReactComponent as StarFillIcon } from "bootstrap-icons/icons/star-fill.svg";
+import { ReactComponent as XIcon } from "bootstrap-icons/icons/x.svg";
 import clsx from "clsx";
 import Button from "components/button/Button";
 import ErrorMessage from "components/error-message/ErrorMessage";
@@ -13,6 +14,10 @@ import UserResponse from "utils/types/UserResponse";
 import classes from "./styles.module.scss";
 
 export interface CardUsuarioProps {
+    /**
+     * Limpa o usuário
+     */
+    clearUsuario?: (timeout?: number) => void;
     /**
      * Request Handler e Estado da busca de repositórios
      */
@@ -31,19 +36,23 @@ function requestMessageError(
     requestState: StateResponse<RepoResponse[], ErrorResponse>
 ) {
     return (
-        <ErrorMessage
-            hasError={Boolean(requestState.error)}
-            clientMessage={{
-                404: "Repositórios não encontrados",
-                500: "Um erro desconhecido ocorreu na busca dos repositórios :(",
-            }}
-            status={requestState.status}
-            serverMessage={requestState.error?.message}
-        />
+        <div className="mt-3">
+            <ErrorMessage
+                hasError={Boolean(requestState.error)}
+                clientMessage={{
+                    404: "Repositórios não encontrados",
+                    500: "Um erro desconhecido ocorreu na busca dos repositórios :(",
+                }}
+                status={requestState.status}
+                serverMessage={requestState.error?.message}
+                showServerMessage
+            />
+        </div>
     );
 }
 
 const CardUsuario: React.FC<CardUsuarioProps> = ({
+    clearUsuario,
     reposRequest,
     starredRequest,
     user,
@@ -54,27 +63,46 @@ const CardUsuario: React.FC<CardUsuarioProps> = ({
     );
 
     const handleRepoClick = useCallback(() => {
+        starredRequest.clear();
         reposRequest.run(() =>
             apiGit.get(ENDPOINTS_GIT.USER_REPO(user?.login))
         );
-    }, [reposRequest, user]);
+    }, [reposRequest, starredRequest, user]);
 
     const handleStarredClick = useCallback(() => {
+        reposRequest.clear();
         starredRequest.run(() =>
             apiGit.get(ENDPOINTS_GIT.USER_STARRED(user?.login))
         );
-    }, [starredRequest, user]);
+    }, [starredRequest, reposRequest, user]);
 
     const RequestError = useMemo(
         () =>
             requestMessageError(
-                reposRequest.requestState || starredRequest.requestState
+                reposRequest.requestState.error
+                    ? reposRequest.requestState
+                    : starredRequest.requestState
             ),
         [reposRequest, starredRequest]
     );
 
+    const CloseComponent = useMemo(
+        () =>
+            clearUsuario && (
+                <XIcon
+                    className="position-absolute cursor-pointer"
+                    style={{ right: 0, zIndex: 1000 }}
+                    fontSize={20}
+                    onClick={() => clearUsuario()}
+                    title="Fechar"
+                />
+            ),
+        [clearUsuario]
+    );
+
     return Boolean(user) ? (
-        <div className="card mb-3">
+        <div className="card mb-3 position-relative">
+            {CloseComponent}
             <div className="row no-gutters">
                 <div className="col-lg-4 my-auto">
                     <img

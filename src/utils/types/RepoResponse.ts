@@ -7,6 +7,7 @@ interface RepoResponse {
     language: string;
     forks: number;
     watchers_count: number;
+    stargazers_count: number;
     open_issues: number;
 }
 

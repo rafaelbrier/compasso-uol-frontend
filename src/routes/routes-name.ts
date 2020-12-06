@@ -1,5 +1,5 @@
 const ROUTES_NAME = {
-    HOME: "/home",
+    HOME: "/",
 };
 
 export default ROUTES_NAME;

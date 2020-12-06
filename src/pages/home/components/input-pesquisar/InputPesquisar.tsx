@@ -3,7 +3,7 @@ import ENDPOINTS_GIT from "api/git/endpoints-git";
 import { ReactComponent as SearchIcon } from "bootstrap-icons/icons/search.svg";
 import Button from "components/button/Button";
 import InputText from "components/input-text/InputText";
-import React, { useCallback, useState } from "react";
+import React, { forwardRef, useCallback, useState } from "react";
 import {
     CallbackReturnType,
     CbROptions,
@@ -11,9 +11,9 @@ import {
 } from "utils/hooks/useRequestState";
 import ErrorResponse from "utils/types/ErrorResponse";
 import UserResponse from "utils/types/UserResponse";
+import useInputPesquisar from "./hooks/useInputPesquisar";
+import useMaisPesquisados from "./hooks/useMaisPesquisados";
 import MaisPesquisados from "./mais-pesquisados/MaisPesquisados";
-import useMaisPesquisados from "./mais-pesquisados/useMaisPesquisados";
-import useInputPesquisar from "./useInputPesquisar";
 
 export interface InputPesquisarProps {
     /**
@@ -37,60 +37,69 @@ function blurField(setInputFocused: (val: boolean) => void) {
     setTimeout(() => setInputFocused && setInputFocused(false), 100);
 }
 
-const InputPesquisar: React.FC<InputPesquisarProps> = ({ run, isLoading }) => {
-    const [inputFocused, setInputFocused] = useState<boolean>(false);
-    const { options, set: setMaisPesquisados } = useMaisPesquisados();
+const InputPesquisar = forwardRef<any, InputPesquisarProps>(
+    ({ run, isLoading }, ref) => {
+        const [inputFocused, setInputFocused] = useState<boolean>(false);
+        const {
+            options,
+            set: setMaisPesquisados,
+            remove,
+        } = useMaisPesquisados();
 
-    const handlePesquisarClick = useCallback(
-        async (_nome?: string) => {
-            const response = await run(() =>
-                apiGit.get(ENDPOINTS_GIT.USER(_nome))
-            );
-            if (response.success) setMaisPesquisados(_nome);
-        },
-        [run, setMaisPesquisados]
-    );
+        const handlePesquisarClick = useCallback(
+            async (_nome?: string) => {
+                const response = await run(() =>
+                    apiGit.get(ENDPOINTS_GIT.USER(_nome))
+                );
+                if (response.success) setMaisPesquisados(_nome);
+            },
+            [run, setMaisPesquisados]
+        );
 
-    const { nome, setNome } = useInputPesquisar(handlePesquisarClick);
-    const handleMaisPesquisadoClick = useCallback(
-        (_nome?: string) => {
-            handlePesquisarClick(_nome);
-            setNome(_nome);
-        },
-        [handlePesquisarClick, setNome]
-    );
+        const { nome, setNome } = useInputPesquisar(handlePesquisarClick);
+        const handleMaisPesquisadoClick = useCallback(
+            (_nome?: string) => {
+                setInputFocused(false);
+                handlePesquisarClick(_nome);
+                setNome(_nome);
+            },
+            [setInputFocused, handlePesquisarClick, setNome]
+        );
 
-    return (
-        <div className="mt-3">
-            <InputText
-                name="nome"
-                label="Nome do usuário"
-                placeholder="Ex.: rafaelbrier"
-                value={nome}
-                onChange={({ target: { value } }) => setNome(value)}
-                onFocus={() => setInputFocused(true)}
-                onBlur={() => blurField(setInputFocused)}
-                endButton={
-                    <Button
-                        className="btn btn-info"
-                        text="Pesquisar"
-                        title="Pesquisar"
-                        loading={isLoading}
-                        onClick={() => handlePesquisarClick(nome)}
-                        disabled={!Boolean(nome)}
-                        endIcon={<SearchIcon />}
-                    />
-                }
-                recommendationComponent={
-                    <MaisPesquisados
-                        options={filterOptions(options, nome)}
-                        show={inputFocused}
-                        searchCallback={handleMaisPesquisadoClick}
-                    />
-                }
-            />
-        </div>
-    );
-};
+        return (
+            <div className="mt-3">
+                <InputText
+                    ref={ref}
+                    name="nome"
+                    label="Nome do usuário"
+                    placeholder="Ex.: rafaelbrier"
+                    value={nome}
+                    onChange={({ target: { value } }) => setNome(value)}
+                    onFocus={() => setInputFocused(true)}
+                    onBlur={() => blurField(setInputFocused)}
+                    endButton={
+                        <Button
+                            className="btn btn-info"
+                            text="Pesquisar"
+                            title="Pesquisar"
+                            loading={isLoading}
+                            onClick={() => handlePesquisarClick(nome)}
+                            disabled={!Boolean(nome)}
+                            endIcon={<SearchIcon />}
+                        />
+                    }
+                    recommendationComponent={
+                        <MaisPesquisados
+                            inputFocused={inputFocused}
+                            options={filterOptions(options, nome)}
+                            searchCallback={handleMaisPesquisadoClick}
+                            removeCallback={remove}
+                        />
+                    }
+                />
+            </div>
+        );
+    }
+);
 
 export default InputPesquisar;

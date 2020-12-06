@@ -1,3 +1,11 @@
+/*#region General */
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/*#endregion*/
+
 /*#region DISPLAY */
 
 @mixin displayFlex($inline) {

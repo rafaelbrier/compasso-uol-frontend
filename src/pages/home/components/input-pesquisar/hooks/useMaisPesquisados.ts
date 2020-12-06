@@ -37,7 +37,22 @@ const useMaisPesquisados = (optionsLim: number = 5) => {
         [options, optionsLim, setLocalStorage, setOptions]
     );
 
-    return { set, options };
+    const remove = useCallback(
+        (item?: string) => {
+            if (item) {
+                const index = options.indexOf(item);
+                if (index !== -1) {
+                    const _opcoes = [...options];
+                    _opcoes.splice(index, 1);
+                    setLocalStorage(_opcoes.join(SEP));
+                    setOptions(_opcoes);
+                }
+            }
+        },
+        [options, setLocalStorage, setOptions]
+    );
+
+    return { set, remove, options };
 };
 
 export default useMaisPesquisados;

@@ -8,7 +8,7 @@ export interface ErrorPage404Props {}
 const ErrorPage404: React.FC<ErrorPage404Props> = () => {
     return (
         <div className="vh-100 d-flex-center-vh">
-            <div className="jumbotron bg-light shadow my-auto w-75">
+            <div className="jumbotron bg-light shadow my-lg-auto col-lg-8 col-12">
                 <h1 className="display-4">Oops!</h1>
                 <h1 className="display-5">A página procurada não existe!</h1>
                 <p className="lead">404 - Not Found</p>
