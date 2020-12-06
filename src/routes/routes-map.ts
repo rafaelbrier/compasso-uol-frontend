@@ -2,7 +2,7 @@ import ROUTES_NAME from "./routes-name";
 
 const ROUTES_MAP = [
     {
-        path: "/",
+        path: "/:nomePesquisa?",
         exact: true,
         component: require("../pages/home/Home").default,
     },

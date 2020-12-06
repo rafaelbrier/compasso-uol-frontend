@@ -25,6 +25,14 @@ export interface CbROptions {
     sleepTimeout?: number;
 }
 
+const INITIAL_STATE = {
+    error: undefined,
+    data: undefined,
+    isLoading: false,
+    status: undefined,
+    success: undefined,
+};
+
 /**
  * Hook para chamadas assíncronas. Realiza o controle de estado quanto a loading e autoClear automaticamente.
  * @returns {RequestState<S, E>}
@@ -38,13 +46,7 @@ const useRequestState = <S, E>(): RequestStateRun<S, E> => {
      * @property {boolean} success='undefined' - booleano referente ao sucesso da chamada, true quando retorna {data} e false quando retorna {error}
      * @property {boolean} isLoading=false - booleano referente a estado da chamada, true enquando a chamada esta em andamento.
      */
-    const requestState: StateResponse<S, E> = {
-        data: undefined,
-        error: undefined,
-        status: undefined,
-        success: false,
-        isLoading: false,
-    };
+    const requestState: StateResponse<S, E> = INITIAL_STATE;
 
     const [state, setState] = useState(requestState);
 
@@ -53,14 +55,11 @@ const useRequestState = <S, E>(): RequestStateRun<S, E> => {
      * @kind function
      * @param {number} timeout=1000 o tempo em milissegundos
      */
-    const clear = useCallback(
-        (timeout = 100) => {
-            setTimeout(() => {
-                setState(requestState);
-            }, timeout);
-        },
-        [requestState]
-    );
+    const clear = useCallback((timeout = 100) => {
+        setTimeout(() => {
+            setState(INITIAL_STATE);
+        }, timeout);
+    }, []);
 
     /**
      * Refere-se ao callback para executar a chamada assíncrona
@@ -77,18 +76,15 @@ const useRequestState = <S, E>(): RequestStateRun<S, E> => {
             options?: CbROptions
         ): Promise<StateResponse<S, E>> => {
             setState({
-                error: undefined,
-                data: undefined,
+                ...INITIAL_STATE,
                 isLoading: true,
-                status: undefined,
-                success: undefined,
             });
 
             if (options?.sleep) {
                 await sleep(options?.sleepTimeout || 3000);
             }
 
-            let responseObj = requestState;
+            let responseObj: StateResponse<S, E> = INITIAL_STATE;
             try {
                 const { data: result, status } = await callback<S | null>();
                 responseObj = {
@@ -126,7 +122,7 @@ const useRequestState = <S, E>(): RequestStateRun<S, E> => {
             setState(responseObj);
             return responseObj;
         },
-        [requestState, clear]
+        [clear]
     );
     return {
         run,

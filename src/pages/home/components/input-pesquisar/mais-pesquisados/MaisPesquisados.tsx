@@ -12,7 +12,7 @@ export interface MaisPesquisadosProps {
     /**
      * Setter callback para alterar o input
      */
-    searchCallback?: (newVal: string) => void;
+    searchCallback?: (nome: string) => void;
 }
 
 const MaisPesquisados: React.FC<MaisPesquisadosProps> = ({

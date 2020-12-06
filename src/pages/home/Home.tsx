@@ -31,9 +31,14 @@ const Home: React.FC<HomeProps> = () => {
                     />
                     <ErrorMessage
                         hasError={Boolean(requestStateBuscarUsuario.error)}
-                        clientMessage="Usuário não encontrado!"
+                        clientMessage={{
+                            403: "Número de tentativas de busca excedido",
+                            404: "Usuário não encontrado",
+                            500: "Um erro desconhecido ocorreu ao pesquisar o usuário :(",
+                        }}
                         status={requestStateBuscarUsuario.status}
                         serverMessage={requestStateBuscarUsuario.error?.message}
+                        showServerMessage
                     />
                     <CardUsuario
                         user={requestStateBuscarUsuario.data}

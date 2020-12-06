@@ -13,6 +13,7 @@ import ErrorResponse from "utils/types/ErrorResponse";
 import UserResponse from "utils/types/UserResponse";
 import MaisPesquisados from "./mais-pesquisados/MaisPesquisados";
 import useMaisPesquisados from "./mais-pesquisados/useMaisPesquisados";
+import useInputPesquisar from "./useInputPesquisar";
 
 export interface InputPesquisarProps {
     /**
@@ -38,7 +39,6 @@ function blurField(setInputFocused: (val: boolean) => void) {
 
 const InputPesquisar: React.FC<InputPesquisarProps> = ({ run, isLoading }) => {
     const [inputFocused, setInputFocused] = useState<boolean>(false);
-    const [nome, setNome] = useState<string>();
     const { options, set: setMaisPesquisados } = useMaisPesquisados();
 
     const handlePesquisarClick = useCallback(
@@ -51,12 +51,13 @@ const InputPesquisar: React.FC<InputPesquisarProps> = ({ run, isLoading }) => {
         [run, setMaisPesquisados]
     );
 
+    const { nome, setNome } = useInputPesquisar(handlePesquisarClick);
     const handleMaisPesquisadoClick = useCallback(
         (_nome?: string) => {
             handlePesquisarClick(_nome);
             setNome(_nome);
         },
-        [handlePesquisarClick]
+        [handlePesquisarClick, setNome]
     );
 
     return (

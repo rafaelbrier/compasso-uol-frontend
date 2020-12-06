@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
 export interface ErrorMessageProps {
     /**
@@ -10,12 +10,11 @@ export interface ErrorMessageProps {
      */
     status?: number;
     /**
-     * A mensagem de erro do Cliente
+     * A mensagem de erro do Cliente para cada status
      */
-    clientMessage?: string;
+    clientMessage?: { [key: string]: string };
     /**
      * A mensagem de erro proveniente do Backend
-     * @default "Um erro desconhecido ocorreu ao processar sua requisição. Por favor tente novamente ou contate um administrador do sistema."
      */
     serverMessage?: string;
     /**
@@ -24,6 +23,7 @@ export interface ErrorMessageProps {
     showServerMessage?: boolean;
 }
 
+const STATUS_DEFAULT = 500;
 const ErrorMessage: React.FC<ErrorMessageProps> = ({
     hasError,
     status,
@@ -31,28 +31,55 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
     serverMessage,
     showServerMessage,
 }) => {
-    const PrimaryMessage = useMemo(
-        () => (
-            <div className="text-danger h6 mb-0">
-                {clientMessage ? clientMessage : serverMessage}
-            </div>
-        ),
-        [clientMessage, serverMessage]
+    const [showDetails, setShowDetails] = useState<boolean>(false);
+
+    const showSecondaryMessage = useMemo(
+        () => clientMessage && showServerMessage,
+        [clientMessage, showServerMessage]
     );
+
+    const PrimaryMessage = useMemo(() => {
+        const _status = status || STATUS_DEFAULT;
+        return (
+            clientMessage && (
+                <div className="text-danger h6 mb-0 d-flex-center-v">
+                    {clientMessage[_status] ||
+                        clientMessage[STATUS_DEFAULT] ||
+                        serverMessage}
+                    {showSecondaryMessage && (
+                        <button
+                            className="btn btn-link p-0 pl-2 btn-no-focus"
+                            type="button"
+                            onClick={() => setShowDetails((p) => !p)}
+                        >
+                            <small>{showDetails ? "-" : "+"} detalhes</small>
+                        </button>
+                    )}
+                </div>
+            )
+        );
+    }, [
+        status,
+        showDetails,
+        showSecondaryMessage,
+        clientMessage,
+        serverMessage,
+    ]);
+
     const SecondaryMessage = useMemo(
         () =>
-            clientMessage && showServerMessage ? (
+            showSecondaryMessage && (
                 <small className="text-danger">
                     {[status, serverMessage].filter(Boolean).join(" - ")}
                 </small>
-            ) : null,
-        [status, showServerMessage, clientMessage, serverMessage]
+            ),
+        [status, serverMessage, showSecondaryMessage]
     );
 
     return hasError ? (
         <div>
             {PrimaryMessage}
-            {SecondaryMessage}
+            {showDetails && SecondaryMessage}
         </div>
     ) : null;
 };

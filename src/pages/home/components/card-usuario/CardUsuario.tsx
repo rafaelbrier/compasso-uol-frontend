@@ -33,7 +33,10 @@ function requestMessageError(
     return (
         <ErrorMessage
             hasError={Boolean(requestState.error)}
-            clientMessage="Repositórios não encontrados!"
+            clientMessage={{
+                404: "Repositórios não encontrados",
+                500: "Um erro desconhecido ocorreu na busca dos repositórios :(",
+            }}
             status={requestState.status}
             serverMessage={requestState.error?.message}
         />
