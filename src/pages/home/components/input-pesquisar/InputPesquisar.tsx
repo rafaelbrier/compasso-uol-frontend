@@ -23,7 +23,7 @@ export interface InputPesquisarProps {
         options?: CbROptions
     ) => Promise<StateResponse<UserResponse, ErrorResponse>>;
     /**
-     * Estado do input
+     * Estado de carregamento da requisição
      */
     isLoading?: boolean;
 }

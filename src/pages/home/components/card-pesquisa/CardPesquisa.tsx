@@ -1,12 +1,8 @@
 import clsx from "clsx";
 import React from "react";
+import classes from "./styles.module.scss";
 
 export interface CardPesquisaProps {
-    /**
-     * Width do Card
-     * @default 75%
-     */
-    cardWidth?: string;
     /**
      * Centraliza horizontalmente
      * @default false
@@ -33,7 +29,6 @@ export interface CardPesquisaProps {
 }
 const CardPesquisa: React.FC<CardPesquisaProps> = ({
     children,
-    cardWidth = "75%",
     centerX,
     imageSrc,
     imageAlt,
@@ -41,15 +36,12 @@ const CardPesquisa: React.FC<CardPesquisaProps> = ({
     imageWidth = 128,
 }) => {
     return (
-        <div
-            className={clsx("card", centerX && "mx-auto")}
-            style={{ width: cardWidth }}
-        >
-            <div className="media p-4">
+        <div className={clsx(classes.card, "card", centerX && "mx-auto")}>
+            <div className={clsx(classes.cardBody, "media p-4")}>
                 <a href="https://github.com/">
                     <img
                         src={imageSrc}
-                        className="mr-3"
+                        className="mr-3 mb-2 mb-md-0"
                         alt={imageAlt}
                         height={imageHeight}
                         width={imageWidth}

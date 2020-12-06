@@ -1,0 +1,10 @@
+@media (max-width: 992px) {
+    .cardImage {
+        max-width: 35vw;
+        border-radius: 100% !important;
+        margin-top: 1rem;
+    }
+    .btnContainer {
+        flex-direction: column !important;
+    }
+}

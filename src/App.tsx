@@ -1,4 +1,5 @@
 import AppRoutes from "AppRoutes";
+import "assets/styles/bootstrap.css";
 import "assets/styles/global.scss";
 import React from "react";
 

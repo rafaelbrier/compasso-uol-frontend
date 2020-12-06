@@ -52,7 +52,7 @@ const InputText = forwardRef<any, InputTextProps>(
         );
 
         return (
-            <div className="form-group">
+            <div className="form-group text-left">
                 {Label}
                 <div className="input-group mb-3">
                     <input

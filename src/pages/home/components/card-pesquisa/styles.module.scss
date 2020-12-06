@@ -1,0 +1,13 @@
+.card {
+    width: 80%;
+}
+
+@media (max-width: 992px) {
+    .card {
+        width: 100%;
+        .cardBody {
+            display: block !important;
+            text-align: center;
+        }
+    }
+}
