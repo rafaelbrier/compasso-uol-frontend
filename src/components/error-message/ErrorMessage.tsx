@@ -40,23 +40,24 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
 
     const PrimaryMessage = useMemo(() => {
         const _status = status || STATUS_DEFAULT;
+        const _clientMessage = clientMessage || {};
         return (
-            clientMessage && (
-                <div className="text-danger h6 mb-0 d-flex-center-v">
-                    {clientMessage[_status] ||
-                        clientMessage[STATUS_DEFAULT] ||
+            <div className="text-danger h6 mb-0 d-flex-center-v">
+                <span>
+                    {_clientMessage[_status] ||
+                        _clientMessage[STATUS_DEFAULT] ||
                         serverMessage}
                     {showSecondaryMessage && (
                         <button
-                            className="btn btn-link p-0 pl-2 btn-no-focus"
+                            className="btn btn-link p-0 pl-2 btn-no-focus d-flex-inline-center-v"
                             type="button"
                             onClick={() => setShowDetails((p) => !p)}
                         >
                             <small>{showDetails ? "-" : "+"} detalhes</small>
                         </button>
                     )}
-                </div>
-            )
+                </span>
+            </div>
         );
     }, [
         status,
@@ -77,7 +78,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
     );
 
     return hasError ? (
-        <div>
+        <div className="text-left">
             {PrimaryMessage}
             {showDetails && SecondaryMessage}
         </div>
