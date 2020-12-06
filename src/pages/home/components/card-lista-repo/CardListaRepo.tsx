@@ -87,7 +87,11 @@ const CardListaRepo: React.FC<CardListaRepoProps> = ({
                                     className="position-relative list-group-item"
                                 >
                                     <div className={classes.repoPath}>
-                                        {repo.full_name}
+                                        {repo.full_name}{" "}
+                                        <span className="text-info">
+                                            {repo.language &&
+                                                ` [${repo.language}]`}
+                                        </span>
                                     </div>
                                     <div className="d-lg-flex">
                                         <div className={classes.repoName}>
