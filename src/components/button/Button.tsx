@@ -1,7 +1,7 @@
 import clsx from "clsx";
-import React, { useMemo } from "react";
+import React, { ButtonHTMLAttributes, useMemo } from "react";
 
-export interface ButtonProps {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     /**
      * Corpo do Botão
      */
@@ -32,11 +32,12 @@ export interface ButtonProps {
 
 const Button: React.FC<ButtonProps> = ({
     text,
-    className,
+    className = "btn btn-outline-secondary",
     loading,
     loadingText = "Buscando...",
     disabled,
     endIcon,
+    ...rest
 }) => {
     const Loading = useMemo(
         () =>
@@ -60,12 +61,9 @@ const Button: React.FC<ButtonProps> = ({
 
     return (
         <button
-            className={clsx(
-                "d-flex-inline-center-v",
-                className || "btn btn-outline-secondary"
-            )}
-            type="button"
+            className={clsx("d-flex-inline-center-v", className)}
             disabled={loading || disabled}
+            {...rest}
         >
             {loading ? loadingText : text}
             {EndIcon}

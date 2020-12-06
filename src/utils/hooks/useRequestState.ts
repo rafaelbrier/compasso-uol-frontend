@@ -4,9 +4,10 @@ import sleep from "../functions/sleep";
 
 export interface StateResponse<S, E> {
     isLoading: boolean;
-    data: S | null;
-    error: E | null;
-    success: boolean | undefined;
+    data?: S;
+    error?: E;
+    status?: number;
+    success?: boolean;
 }
 
 export type CallbackReturnType = <S = any>() => Promise<AxiosResponse<S>>;
@@ -31,14 +32,16 @@ export interface CbROptions {
 const useRequestState = <S, E>(): RequestStateRun<S, E> => {
     /**
      * Estado de retorno
-     * @property {S | any} data=null resultado da chamada em caso de sucesso
-     * @property {E | any} error='null' dados do erro, em caso de erro. Tenta pegar -> {error.response.data} caso contrário pega o próprop {error}
-     * @property {boolean} success='undefined' booleano referente ao sucesso da chamada, true quando retorna {data} e false quando retorna {error}
-     * @property {boolean} isLoading=false booleano referente a estado da chamada, true enquando a chamada esta em andamento.
+     * @property {S | any} data='undefined' - resultado da chamada em caso de sucesso
+     * @property {E | any} error='undefined' - dados do erro, em caso de erro. Tenta pegar -> {error.response.data} caso contrário pega o próprop {error}
+     * @property {number} status='undefined' - status da resposta
+     * @property {boolean} success='undefined' - booleano referente ao sucesso da chamada, true quando retorna {data} e false quando retorna {error}
+     * @property {boolean} isLoading=false - booleano referente a estado da chamada, true enquando a chamada esta em andamento.
      */
     const requestState: StateResponse<S, E> = {
-        data: null,
-        error: null,
+        data: undefined,
+        error: undefined,
+        status: undefined,
         success: false,
         isLoading: false,
     };
@@ -50,11 +53,14 @@ const useRequestState = <S, E>(): RequestStateRun<S, E> => {
      * @kind function
      * @param {number} timeout=1000 o tempo em milissegundos
      */
-    const clear = useCallback((timeout = 100) => {
-        setTimeout(() => {
-            setState(requestState);
-        }, timeout);
-    }, []);
+    const clear = useCallback(
+        (timeout = 100) => {
+            setTimeout(() => {
+                setState(requestState);
+            }, timeout);
+        },
+        [requestState]
+    );
 
     /**
      * Refere-se ao callback para executar a chamada assíncrona
@@ -71,9 +77,10 @@ const useRequestState = <S, E>(): RequestStateRun<S, E> => {
             options?: CbROptions
         ): Promise<StateResponse<S, E>> => {
             setState({
-                error: null,
-                data: null,
+                error: undefined,
+                data: undefined,
                 isLoading: true,
+                status: undefined,
                 success: undefined,
             });
 
@@ -83,39 +90,43 @@ const useRequestState = <S, E>(): RequestStateRun<S, E> => {
 
             let responseObj = requestState;
             try {
-                const { data: result } = await callback<S | null>();
+                const { data: result, status } = await callback<S | null>();
                 responseObj = {
                     ...responseObj,
-                    error: null,
-                    data: result,
+                    error: undefined,
+                    data: result || undefined,
+                    status,
                     success: true,
                 };
             } catch (error) {
                 if (options?.autoClear) {
                     clear(5000);
                 }
-                if (error.response && error.response.data) {
-                    const errorData = error.response && error.response.data;
-                    responseObj = {
-                        ...responseObj,
-                        error: errorData,
-                        data: null,
-                        success: false,
-                    };
-                } else {
-                    responseObj = {
-                        ...responseObj,
-                        error,
-                        data: null,
-                        success: false,
-                    };
+                if (error.response) {
+                    if (error.response.data) {
+                        responseObj = {
+                            ...responseObj,
+                            error: error.response.data,
+                            data: undefined,
+                            status: error.response.status,
+                            success: false,
+                        };
+                    } else {
+                        responseObj = {
+                            ...responseObj,
+                            error,
+                            status: error.response.status,
+                            data: undefined,
+                            success: false,
+                        };
+                    }
                 }
             }
 
             setState(responseObj);
             return responseObj;
         },
-        [clear]
+        [requestState, clear]
     );
     return {
         run,

@@ -1,32 +1,37 @@
-import { ReactComponent as SearchIcon } from "bootstrap-icons/icons/search.svg";
-import Button from "components/button/Button";
-import InputText from "components/input-text/InputText";
-import * as React from "react";
+import ErrorMessage from "components/error-message/ErrorMessage";
+import React from "react";
 import IMAGES_PATH from "utils/images-path";
+import ErrorResponse from "utils/types/ErrorResponse";
+import UserResponse from "utils/types/UserResponse";
+import useRequestState from "./../../utils/hooks/useRequestState";
 import CardPesquisa from "./components/card-pesquisa/CardPesquisa";
+import CardUsuario from "./components/card-usuario/CardUsuario";
+import InputPesquisar from "./components/input-pesquisar/InputPesquisar";
 
 export interface HomeProps {}
 const Home: React.FC<HomeProps> = () => {
+    const {
+        run: runBuscarUsuario,
+        requestState: requestStateBuscarUsuario,
+    } = useRequestState<UserResponse, ErrorResponse>();
+
     return (
         <div className="m-5">
-            <CardPesquisa
-                imageSrc={IMAGES_PATH.GITHUB_LOGO}
-                centerX
-                header="Pesquisar usuário Git"
-            >
-                <div className="mt-3">
-                    <InputText
-                        name="pesquisa"
-                        label="Nome do usuário"
-                        placeholder="Ex.: rafaelbrier"
-                        endButton={
-                            <Button
-                                className="btn btn-outline-info"
-                                text="Pesquisar"
-                                endIcon={<SearchIcon />}
-                            />
-                        }
+            <CardPesquisa imageSrc={IMAGES_PATH.GITHUB_LOGO} centerX>
+                <div className="mx-3 mt-1">
+                    <h5 className="mt-0">Pesquisar usuário Git</h5>
+
+                    <InputPesquisar
+                        run={runBuscarUsuario}
+                        isLoading={requestStateBuscarUsuario.isLoading}
                     />
+                    <ErrorMessage
+                        hasError={Boolean(requestStateBuscarUsuario.error)}
+                        clientMessage="Usuário não encontrado!"
+                        status={requestStateBuscarUsuario.status}
+                        serverMessage={requestStateBuscarUsuario.error?.message}
+                    />
+                    <CardUsuario user={requestStateBuscarUsuario.data} />
                 </div>
             </CardPesquisa>
         </div>
