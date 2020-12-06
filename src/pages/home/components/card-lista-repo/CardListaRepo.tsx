@@ -82,7 +82,10 @@ const CardListaRepo: React.FC<CardListaRepoProps> = ({
                     <ul className="list-group list-group-flush">
                         {hasRepo ? (
                             (repos || []).map((repo) => (
-                                <li className="position-relative list-group-item">
+                                <li
+                                    key={repo.full_name}
+                                    className="position-relative list-group-item"
+                                >
                                     <div className={classes.repoPath}>
                                         {repo.full_name}
                                     </div>
