@@ -66,6 +66,7 @@ const InputPesquisar = forwardRef<any, InputPesquisarProps>(
         return (
             <div className="mt-3">
                 <InputText
+                    id="input-pesquisar"
                     ref={ref}
                     name="nome"
                     label="Nome do usuário"
@@ -76,6 +77,7 @@ const InputPesquisar = forwardRef<any, InputPesquisarProps>(
                     onBlur={() => blurField(setInputFocused)}
                     endButton={
                         <Button
+                            id="btn-pesquisar"
                             className="btn btn-info"
                             text="Pesquisar"
                             title="Pesquisar"

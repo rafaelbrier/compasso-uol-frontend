@@ -117,7 +117,9 @@ const CardUsuario: React.FC<CardUsuarioProps> = ({
                             </p>
                         </div>
 
-                        <p className="card-text">{user?.bio}</p>
+                        <p id="user-bio" className="card-text">
+                            {user?.bio}
+                        </p>
 
                         <div
                             className={clsx(
@@ -126,7 +128,6 @@ const CardUsuario: React.FC<CardUsuarioProps> = ({
                             )}
                         >
                             <Button
-                                id="btn-listar-repo"
                                 className="btn btn-outline-success"
                                 startIcon={<ArchiveFillIcon />}
                                 text="Repositórios"

@@ -12,7 +12,7 @@ function onlyUnique(value: string, index: number, self: string[]) {
     return self.indexOf(value) === index;
 }
 
-const useMaisPesquisados = (optionsLim: number = 5) => {
+const useMaisPesquisados = (optionsLim: number = 20) => {
     const { set: setLocalStorage, get: getLocalStorage } = useLocalStorage(
         MAIS_PESQUISADOS_KEY
     );
